@@ -1,0 +1,7 @@
+{
+  "name": "Calabaza",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "custom"
+}
