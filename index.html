@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Rewards - Earn Real Rewards</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        .hidden { display: none; }
+        .nav-item.active { color: #f97316; } /* Tailwind's orange-500 */
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <div id="loader" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
+    </div>
+
+    <!-- =================================================================
+         NUEVA SECCIÓN: LANDING PAGE
+    ================================================================== -->
+    <div id="landing-section" class="min-h-screen bg-white">
+        <div class="container mx-auto px-6 py-12 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800">
+                Completa Tareas, <span class="text-orange-500">Gana Recompensas</span>
+            </h1>
+            <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                Únete a nuestra comunidad y transforma tu tiempo en redes sociales en dinero, tarjetas de regalo y promociones exclusivas. ¡Es fácil y divertido!
+            </p>
+            <div class="mt-8">
+                <button id="cta-get-started" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
+                    Comenzar Ahora
+                </button>
+            </div>
+
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
+                <div class="p-6">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mx-auto mb-4">
+                        <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-center text-gray-800">Completa Tareas Simples</h3>
+                    <p class="mt-2 text-gray-600 text-center">Mira videos, sigue perfiles, dale like a publicaciones y más. Nuevas tareas disponibles todos los días.</p>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mx-auto mb-4">
+                        <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-center text-gray-800">Acumula Puntos</h3>
+                    <p class="mt-2 text-gray-600 text-center">Cada tarea completada te otorga puntos que se suman a tu balance instantáneamente. ¡Mientras más haces, más ganas!</p>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mx-auto mb-4">
+                        <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-center text-gray-800">Canjea Recompensas</h3>
+                    <p class="mt-2 text-gray-600 text-center">Usa tus puntos para obtener tarjetas de regalo de Amazon, dinero en PayPal, promociones para tus redes y mucho más.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="auth-section" class="min-h-screen flex items-center justify-center p-4 hidden">
+        <div class="w-full max-w-md bg-white rounded-lg shadow-md p-8 relative">
+            <a href="#" id="back-to-landing" class="absolute top-4 left-4 text-blue-500 hover:text-blue-700 font-bold">&larr; Volver al Inicio</a>
+            <div id="login-form" class="mt-8">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
+                <form id="login-form-element">
+                    <div class="mb-4"><label for="login-email" class="block text-gray-700 text-sm font-bold mb-2">Email</label><input type="email" id="login-email" autocomplete="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required></div>
+                    <div class="mb-6"><label for="login-password" class="block text-gray-700 text-sm font-bold mb-2">Password</label><input type="password" id="login-password" autocomplete="current-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required></div>
+                    <div class="flex items-center justify-between"><button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Sign In</button><a href="#" id="show-register" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">Create an Account</a></div>
+                </form>
+            </div>
+            <div id="register-form" class="hidden mt-8">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Register</h2>
+                <form id="register-form-element">
+                    <div class="mb-4"><label for="register-email" class="block text-gray-700 text-sm font-bold mb-2">Email</label><input type="email" id="register-email" autocomplete="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required></div>
+                    <div class="mb-6"><label for="register-password" class="block text-gray-700 text-sm font-bold mb-2">Password</label><input type="password" id="register-password" autocomplete="new-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required></div>
+                    <div class="flex items-center justify-between"><button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Sign Up</button><a href="#" id="show-login" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">Already have an account?</a></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-section" class="hidden">
+        <main id="app-content" class="pb-24"></main>
+        <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t z-30">
+            <div class="flex justify-around max-w-lg mx-auto">
+                <button onclick="navigate('tasks')" class="nav-item flex-1 text-center py-3 text-gray-700 hover:text-orange-500 focus:outline-none"><svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg><span class="text-xs">Tasks</span></button>
+                <button onclick="navigate('buy-points')" class="nav-item flex-1 text-center py-3 text-gray-700 hover:text-orange-500 focus:outline-none"><svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg><span class="text-xs">Buy Points</span></button>
+                <button onclick="navigate('redeem')" class="nav-item flex-1 text-center py-3 text-gray-700 hover:text-orange-500 focus:outline-none"><svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path></svg><span class="text-xs">Redeem</span></button>
+                <button onclick="navigate('my-points')" class="nav-item flex-1 text-center py-3 text-gray-700 hover:text-orange-500 focus:outline-none"><svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01M12 6v-1.586a1 1 0 00-2 0V6m2 0h-2m11.621 1.621l-.849-.849m-1.272 1.272l-.849-.849M3.228 7.228L4.077 8.077m1.272-1.272l.849.849M12 21a9 9 0 100-18 9 9 0 000 18z"></path></svg><span class="text-xs">My Points</span></button>
+                <button onclick="navigate('profile')" class="nav-item flex-1 text-center py-3 text-gray-700 hover:text-orange-500 focus:outline-none"><svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg><span class="text-xs">Profile</span></button>
+            </div>
+        </nav>
+    </div>
+
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-60 z-40 hidden items-center justify-center p-4"></div>
+    
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, get, set, push, update, increment, serverTimestamp, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC_Hoz_89k297oqNrdeNtxVNfvqYnzmSxU",
+            authDomain: "task-rewards-6fd0c.firebaseapp.com",
+            projectId: "task-rewards-6fd0c",
+            storageBucket: "task-rewards-6fd0c.firebasestorage.app",
+            messagingSenderId: "956035629617",
+            appId: "1:956035629617:web:06cf5ee46b08aae01b8b10"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+        let userProfile = {};
+        window.compoundTaskSubmissions = {};
+        let ytPlayer, countdownInterval;
+        let currentCountdown, onTimerEndCallbackGlobal, cooldownUpdateInterval;
+
+        const loader = document.getElementById('loader');
+        const landingSection = document.getElementById('landing-section');
+        const authSection = document.getElementById('auth-section');
+        const appSection = document.getElementById('app-section');
+        const appContent = document.getElementById('app-content');
+        const modalContainer = document.getElementById('modal-container');
+        
+        onAuthStateChanged(auth, (user) => {
+            loader.classList.add('hidden');
+            if (user) {
+                currentUser = user;
+                landingSection.classList.add('hidden');
+                authSection.classList.add('hidden');
+                appSection.classList.remove('hidden');
+                listenToUserData();
+                navigate('tasks');
+            } else {
+                currentUser = null; userProfile = {};
+                appSection.classList.add('hidden');
+                authSection.classList.add('hidden');
+                landingSection.classList.remove('hidden');
+                clearInterval(cooldownUpdateInterval);
+            }
+        });
+        
+        document.getElementById('login-form-element').addEventListener('submit', async (e) => { e.preventDefault(); loader.classList.remove('hidden'); const email = document.getElementById('login-email').value; const password = document.getElementById('login-password').value; try { await signInWithEmailAndPassword(auth, email, password); } catch (error) { alert(`Login failed: ${error.message}`); } finally { loader.classList.add('hidden'); } });
+        document.getElementById('register-form-element').addEventListener('submit', async (e) => { e.preventDefault(); loader.classList.remove('hidden'); const email = document.getElementById('register-email').value; const password = document.getElementById('register-password').value; try { const cred = await createUserWithEmailAndPassword(auth, email, password); await set(ref(db, `users/${cred.user.uid}`), { email: cred.user.email, points: 0, createdAt: serverTimestamp() }); } catch (error) { alert(`Registration failed: ${error.message}`); } finally { loader.classList.add('hidden'); } });
+
+        function toggleAuthForms(e) { e.preventDefault(); document.getElementById('login-form').classList.toggle('hidden'); document.getElementById('register-form').classList.toggle('hidden'); }
+        document.getElementById('show-register').addEventListener('click', toggleAuthForms);
+        document.getElementById('show-login').addEventListener('click', toggleAuthForms);
+
+        document.getElementById('cta-get-started').addEventListener('click', () => { landingSection.classList.add('hidden'); authSection.classList.remove('hidden'); });
+        document.getElementById('back-to-landing').addEventListener('click', () => { authSection.classList.add('hidden'); landingSection.classList.remove('hidden'); });
+
+        function listenToUserData() { if (!currentUser) return; onValue(ref(db, `users/${currentUser.uid}`), (snapshot) => { userProfile = snapshot.val() || { points: 0, completedTasks: {} }; }); }
+        
+        function navigate(page) {
+            appContent.innerHTML = ''; loader.classList.remove('hidden'); clearInterval(cooldownUpdateInterval);
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            const navButton = document.querySelector(`button[onclick="navigate('${page}')"]`);
+            if (navButton) navButton.classList.add('active');
+            
+            const pageLoaders = {
+                'tasks': loadTasksPage, 'buy-points': loadBuyPointsPage, 'redeem': loadRedeemPage,
+                'my-points': loadMyPointsPage, 'profile': loadProfilePage
+            };
+            if (pageLoaders[page]) pageLoaders[page]();
+            else console.error(`Page loader for "${page}" not found.`);
+            loader.classList.add('hidden');
+        }
+
+        async function loadTasksPage() {
+            appContent.innerHTML = `<div class="p-4"><h1 class="text-3xl font-bold mb-4">Available Tasks</h1><div id="task-list" class="space-y-4"></div></div>`;
+            const snapshot = await get(ref(db, 'tasks'));
+            const tasks = snapshot.val();
+            const taskList = document.getElementById('task-list');
+            if (!tasks) { taskList.innerHTML = `<p class="text-center text-gray-500">No tasks available.</p>`; return; }
+            let content = '';
+            const COOLDOWN = 30 * 60 * 1000;
+            for (const taskId in tasks) {
+                const task = tasks[taskId];
+                const completion = userProfile.completedTasks?.[taskId];
+                const isRepeatableYouTube = task.type === 'simple' && isYouTube(task.targetURL) && task.timerDuration > 0;
+                let isCompletedAndNotRepeatable = completion && (completion.status === 'approved' || completion.status === 'pending') && !isRepeatableYouTube;
+                if (isCompletedAndNotRepeatable) continue;
+                if (isRepeatableYouTube && completion?.status === 'approved') {
+                    const timeSince = Date.now() - (completion.completedAt || 0);
+                    if (timeSince < COOLDOWN) {
+                        content += `<div class="bg-white p-4 rounded-lg shadow-md opacity-60 flex items-center space-x-4"><img src="${task.imageBase64}" class="w-16 h-16 rounded-md object-cover flex-shrink-0"><div class="flex-1 min-w-0"><h3 class="font-bold text-lg truncate">${task.title}</h3><p class="text-sm text-gray-600 truncate">You can complete this task again soon.</p><span class="text-sm text-blue-500 font-bold cooldown-timer" data-cooldown-end="${(completion.completedAt || 0) + COOLDOWN}">Calculating...</span></div><button class="bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed flex-shrink-0">Waiting</button></div>`;
+                    } else {
+                         content += `<div class="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4"><img src="${task.imageBase64}" class="w-16 h-16 rounded-md object-cover flex-shrink-0"><div class="flex-1 min-w-0"><h3 class="font-bold text-lg truncate">${task.title}</h3><p class="text-sm text-gray-600 truncate">${task.description}</p><span class="text-green-500 font-bold">+${task.points} Points</span></div><button onclick="startTask('${taskId}')" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 flex-shrink-0">Start Again</button></div>`;
+                    }
+                } else if (!completion || completion.status === 'rejected') {
+                    content += `<div class="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4"><img src="${task.imageBase64}" class="w-16 h-16 rounded-md object-cover flex-shrink-0"><div class="flex-1 min-w-0"><h3 class="font-bold text-lg truncate">${task.title}</h3><p class="text-sm text-gray-600 truncate">${task.description}</p><span class="text-green-500 font-bold">+${task.points} Points</span></div><button onclick="startTask('${taskId}')" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 flex-shrink-0">Start</button></div>`;
+                }
+            }
+            taskList.innerHTML = content || `<p class="text-center text-gray-500">No new tasks for you.</p>`;
+            if (document.querySelector('.cooldown-timer')) { clearInterval(cooldownUpdateInterval); cooldownUpdateInterval = setInterval(updateCooldownTimers, 1000); updateCooldownTimers(); }
+        }
+        
+        function updateCooldownTimers() {
+            const timers = document.querySelectorAll('.cooldown-timer');
+            if (timers.length === 0) { clearInterval(cooldownUpdateInterval); return; }
+            let shouldReload = false;
+            timers.forEach(timer => {
+                const endTime = parseInt(timer.getAttribute('data-cooldown-end'));
+                const remaining = endTime - Date.now();
+                if (remaining <= 0) {
+                    shouldReload = true;
+                } else {
+                    const minutes = Math.floor(remaining / 60000);
+                    const seconds = Math.floor((remaining % 60000) / 1000);
+                    timer.textContent = `Available in ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }
+            });
+            if (shouldReload) { clearInterval(cooldownUpdateInterval); navigate('tasks'); }
+        }
+
+        async function startTask(taskId) { const task = (await get(ref(db, `tasks/${taskId}`))).val(); if (task.type === 'simple') handleSimpleTask(taskId, task); else if (task.type === 'compound') handleCompoundTask(taskId, task, 0); }
+        function isYouTube(url) { return url && (url.includes('youtube.com') || url.includes('youtu.be')); }
+        function handleSimpleTask(taskId, task) { if (isYouTube(task.targetURL) && task.timerDuration > 0) { showYouTubeModal(task, () => { awardPoints(task.points); markTaskAsComplete(taskId, { status: 'approved' }); showSuccessModal(`You've earned ${task.points} points!`, () => navigate('tasks')); }); return; } buildTaskModal(taskId, 'simple', task, null); }
+        function handleCompoundTask(taskId, task, subtaskIndex) { const subtask = task.subtasks[subtaskIndex]; if (isYouTube(subtask.targetURL) && subtask.timerDuration > 0) { showYouTubeModal(subtask, () => { const isLast = subtaskIndex + 1 >= task.subtasks.length; if (isLast) submitCompoundSubtask(taskId, task, subtaskIndex); else handleCompoundTask(taskId, task, subtaskIndex + 1); }); return; } buildTaskModal(taskId, 'compound', task, subtaskIndex); }
+        
+        function onPlayerReady(event) { event.target.playVideo(); }
+        function onPlayerStateChange(event) {
+            clearInterval(countdownInterval);
+            const timerDisplay = document.getElementById('timer-display');
+            if (event.data == YT.PlayerState.PLAYING) {
+                countdownInterval = setInterval(() => {
+                    currentCountdown--;
+                    if (timerDisplay) timerDisplay.innerText = `Time left: ${currentCountdown}s`;
+                    if (currentCountdown <= 0) {
+                        clearInterval(countdownInterval);
+                        closeModal();
+                        if(onTimerEndCallbackGlobal) onTimerEndCallbackGlobal();
+                    }
+                }, 1000);
+            } else if (event.data == YT.PlayerState.PAUSED) {
+                if (timerDisplay) timerDisplay.innerText = `Video paused. ${currentCountdown}s remaining`;
+            } else if (event.data == YT.PlayerState.BUFFERING) {
+                if (timerDisplay) timerDisplay.innerText = `Loading video...`;
+            }
+        }
+        window.onYouTubeIframeAPIReady = function() {};
+
+        function showYouTubeModal(taskInfo, onTimerEnd) { currentCountdown = taskInfo.timerDuration || 10; onTimerEndCallbackGlobal = onTimerEnd; const videoId = taskInfo.targetURL.split('v=')[1]?.split('&')[0] || taskInfo.targetURL.split('/').pop(); modalContainer.innerHTML = `<div class="bg-white rounded-lg w-full max-w-lg p-4 relative"><h2 class="text-xl font-bold mb-4">${taskInfo.title || taskInfo.description}</h2><div class="aspect-video"><div id="youtube-player"></div></div><p class="text-center text-2xl font-bold mt-4" id="timer-display">Loading video...</p></div>`; modalContainer.classList.remove('hidden'); ytPlayer = new YT.Player('youtube-player', { height: '100%', width: '100%', videoId: videoId, playerVars: { 'autoplay': 1, 'controls': 1, 'rel': 0 }, events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange } }); }
+        
+        function showSuccessModal(message, onConfirm = () => {}) {
+            modalContainer.innerHTML = `<div class="bg-white rounded-lg p-6 shadow-xl text-center w-full max-w-sm"><div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4"><svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg></div><h3 class="text-lg leading-6 font-medium text-gray-900">Success!</h3><div class="mt-2 px-7 py-3"><p class="text-xl font-bold text-green-600">${message}</p></div><div class="mt-4"><button id="success-modal-close" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg">Awesome!</button></div></div>`;
+            modalContainer.classList.remove('hidden');
+            document.getElementById('success-modal-close').onclick = () => { closeModal(); onConfirm(); };
+        }
+
+        function closeModal() { if(ytPlayer) { try { ytPlayer.destroy(); } catch(e){} ytPlayer = null; } clearInterval(countdownInterval); modalContainer.innerHTML = ''; modalContainer.classList.add('hidden'); }
+        async function markTaskAsComplete(taskId, details) { await set(ref(db, `users/${currentUser.uid}/completedTasks/${taskId}`), { ...details, completedAt: serverTimestamp() }); }
+        
+        function buildTaskModal(taskId, taskType, task, subtaskIndex) { const isCompound = taskType === 'compound'; const currentStep = isCompound ? task.subtasks[subtaskIndex] : task; const title = isCompound ? `${task.title} (Step ${subtaskIndex + 1}/${task.subtasks.length})` : task.title; let verificationHtml = ''; const vType = currentStep.verificationType; if (vType === 'photo') verificationHtml = `<label class="block mb-2 font-semibold">Upload proof (photo):</label><input type="file" id="photo-proof" accept="image/*" class="w-full text-sm" required>`; else if (vType === 'question') verificationHtml = `<label class="block mb-2 font-semibold">${currentStep.questionText}</label><input type="text" id="question-answer" class="w-full border rounded p-2" required>`; else if (vType === 'both') verificationHtml = `<label class="block mb-2 font-semibold">Upload proof (photo):</label><input type="file" id="photo-proof" accept="image/*" class="w-full text-sm" required><label class="block mt-4 mb-2 font-semibold">${currentStep.questionText}</label><input type="text" id="question-answer" class="w-full border rounded p-2" required>`; const buttonText = isCompound ? (subtaskIndex + 1 === task.subtasks.length ? 'Finish & Submit Mission' : 'Complete Step & Continue') : 'Submit for Review'; modalContainer.innerHTML = `<div class="bg-white rounded-lg w-full max-w-lg p-6 relative"><button onclick="closeModal()" class="absolute top-2 right-2 text-2xl font-bold">&times;</button><h2 class="text-xl font-bold mb-2">${title}</h2><div id="task-initial-view"><p class="mb-4">${currentStep.description}</p><button id="open-task-btn" class="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600">Open Task & Continue</button></div><div id="task-verification-view" class="hidden"><p class="mb-4 text-green-600 font-semibold">Task link opened. Submit proof below.</p><form id="verification-form">${verificationHtml}<button type="submit" class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg">${buttonText}</button></form></div></div>`; modalContainer.classList.remove('hidden'); document.getElementById('open-task-btn').onclick = () => revealVerification(taskId, taskType, task, subtaskIndex); document.getElementById('verification-form').onsubmit = (e) => { e.preventDefault(); if (isCompound) submitCompoundSubtask(taskId, task, subtaskIndex); else submitSimpleVerification(taskId, task); }; }
+        function revealVerification(taskId, taskType, task, subtaskIndex) { const isCompound = taskType === 'compound'; const currentStep = isCompound ? task.subtasks[subtaskIndex] : task; window.open(currentStep.targetURL, '_blank'); if (currentStep.verificationType === 'none') { if (isCompound) { const isLast = subtaskIndex + 1 === task.subtasks.length; if (isLast) submitCompoundSubtask(taskId, task, subtaskIndex); else handleCompoundTask(taskId, task, subtaskIndex + 1); } else { awardPoints(task.points); markTaskAsComplete(taskId, { status: 'approved' }); showSuccessModal(`You earned ${task.points} points!`, () => navigate('tasks')); } return; } document.getElementById('task-initial-view').classList.add('hidden'); document.getElementById('task-verification-view').classList.remove('hidden'); }
+        async function submitSimpleVerification(taskId, task) { loader.classList.remove('hidden'); const submission = {}; if (task.verificationType.includes('question')) submission.answer = document.getElementById('question-answer').value; if (task.verificationType.includes('photo')) { const file = document.getElementById('photo-proof').files[0]; if (file) submission.photoBase64 = await toBase64(file); else { alert("Photo proof is required."); loader.classList.add('hidden'); return; } } await push(ref(db, 'verifications'), { userId: currentUser.uid, taskId, submission, status: 'pending', taskTitle: task.title, userEmail: currentUser.email, timestamp: serverTimestamp() }); markTaskAsComplete(taskId, { status: 'pending' }); alert('Submission received! It will be reviewed.'); closeModal(); navigate('tasks'); loader.classList.add('hidden'); }
+        async function submitCompoundSubtask(taskId, task, subtaskIndex) { const subtask = task.subtasks[subtaskIndex]; if (subtask.verificationType !== 'none') { const currentSubmission = {}; if (subtask.verificationType.includes('question')) currentSubmission.answer = document.getElementById('question-answer').value; if (subtask.verificationType.includes('photo')) { const file = document.getElementById('photo-proof')?.files[0]; if (file) currentSubmission.photoBase64 = await toBase64(file); else { alert("Photo proof is required for this step."); return; } } window.compoundTaskSubmissions[subtaskIndex] = currentSubmission; } const isLastSubtask = subtaskIndex + 1 === task.subtasks.length; if (isLastSubtask) { loader.classList.remove('hidden'); await push(ref(db, 'verifications'), { userId: currentUser.uid, taskId, submission: window.compoundTaskSubmissions, status: 'pending', taskTitle: task.title, userEmail: currentUser.email, timestamp: serverTimestamp(), isCompound: true }); markTaskAsComplete(taskId, { status: 'pending' }); window.compoundTaskSubmissions = {}; alert('Mission submitted! It will be reviewed.'); closeModal(); navigate('tasks'); loader.classList.add('hidden'); } else { handleCompoundTask(taskId, task, subtaskIndex + 1); } }
+        async function awardPoints(amount, reason = 'Task completion') { await update(ref(db, `users/${currentUser.uid}`), { points: increment(amount) }); }
+        async function deductPoints(amount, reason = 'Redemption') { if ((userProfile.points || 0) < amount) return false; await update(ref(db, `users/${currentUser.uid}`), { points: increment(-amount) }); return true; }
+        async function loadRewards() { const snapshot = await get(ref(db, 'rewards')); const rewards = snapshot.val(); const container = document.getElementById('rewards-list'); if (!rewards) { container.innerHTML = `<p class="text-center text-gray-500 col-span-full">No rewards available.</p>`; return; } let content = ''; for(const rewardId in rewards) { const reward = rewards[rewardId]; const disabled = (userProfile.points || 0) < reward.pointsRequired; content += `<div class="bg-white p-4 rounded-lg shadow-md flex flex-col"><img src="${reward.imageBase64}" class="w-full h-32 object-cover rounded-md mb-4"><h3 class="font-bold text-lg flex-1">${reward.title}</h3><p class="text-sm text-gray-600 mb-2">${reward.description}</p><div class="flex justify-between items-center mt-auto"><span class="text-blue-600 font-bold">${reward.pointsRequired} Points</span><button onclick="redeemReward('${rewardId}')" class="bg-orange-500 text-white px-3 py-1 text-sm rounded-lg hover:bg-orange-600 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}" ${disabled ? 'disabled' : ''}>Redeem</button></div></div>`; } container.innerHTML = content; }
+        async function redeemReward(rewardId) { const reward = (await get(ref(db, `rewards/${rewardId}`))).val(); if ((userProfile.points || 0) < reward.pointsRequired) { alert("You don't have enough points."); return; } let submissionField = ''; if (reward.type === 'promotion') { submissionField = `<label class="block mb-2 mt-4">Link to promote:</label><input type="url" id="promotion-link" class="w-full border rounded p-2" required>`; } modalContainer.innerHTML = `<div class="bg-white rounded-lg w-full max-w-md p-6 relative"><button onclick="closeModal()" class="absolute top-2 right-2 text-2xl font-bold">&times;</button><h2 class="text-xl font-bold mb-2">Confirm Redemption</h2><p>Redeem <span class="font-bold">${reward.title}</span> for <span class="font-bold">${reward.pointsRequired} points</span>.</p>${submissionField}<form id="redeem-form"><div class="flex justify-end space-x-4 mt-6"><button type="button" onclick="closeModal()" class="bg-gray-300 px-4 py-2 rounded">Cancel</button><button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded">Confirm</button></div></form></div>`; modalContainer.classList.remove('hidden'); document.getElementById('redeem-form').addEventListener('submit', async (e) => { e.preventDefault(); loader.classList.remove('hidden'); const deducted = await deductPoints(reward.pointsRequired); if (!deducted) { alert("Redemption failed."); loader.classList.add('hidden'); return; } const req = { userId: currentUser.uid, userEmail: currentUser.email, rewardId, rewardTitle: reward.title, points: reward.pointsRequired, status: 'pending', timestamp: serverTimestamp() }; if (reward.type === 'promotion') req.promotionLink = document.getElementById('promotion-link').value; await push(ref(db, 'redemptions'), req); alert('Redemption request sent!'); closeModal(); navigate('redeem'); loader.classList.add('hidden'); }); }
+        function loadRedemptionHistory() { const q = query(ref(db, 'redemptions'), orderByChild('userId'), equalTo(currentUser.uid)); onValue(q, (snapshot) => { const container = document.getElementById('redemption-history'); container.innerHTML = ''; if (!snapshot.exists()) { container.innerHTML = `<p class="text-center text-gray-500">You have no redemption history.</p>`; return; } let cards = []; snapshot.forEach(child => { const r = child.val(); let sColor = 'text-yellow-500'; if (r.status === 'approved') sColor = 'text-green-500'; if (r.status === 'rejected') sColor = 'text-red-500'; let d = ''; if (r.status === 'approved' && r.rewardData) d = `<div class="mt-2 p-2 bg-gray-100 rounded"><strong>Reward:</strong> <span class="font-mono break-all">${r.rewardData}</span></div>`; if (r.status === 'rejected' && r.rejectionReason) d = `<div class="mt-2 p-2 bg-red-50 rounded text-red-700"><strong>Reason:</strong> ${r.rejectionReason}</div>`; cards.push(`<div class="bg-white p-4 rounded-lg shadow-sm"><div class="flex justify-between items-start"><div><h4 class="font-bold">${r.rewardTitle}</h4><p class="text-sm text-gray-500">-${r.points} points</p><p class="text-xs text-gray-400">${new Date(r.timestamp).toLocaleString()}</p></div><span class="font-bold capitalize ${sColor}">${r.status}</span></div>${d}</div>`); }); container.innerHTML = cards.reverse().join(''); }); }
+        function loadRedeemPage() { appContent.innerHTML = `<div class="p-4"><h1 class="text-3xl font-bold mb-4">Redeem Points</h1><div id="rewards-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div><h2 class="text-xl font-bold mt-8 mb-4">My Redemptions</h2><div id="redemption-history" class="space-y-3"></div></div>`; loadRewards(); loadRedemptionHistory(); }
+        function loadProfilePage() { appContent.innerHTML = `<div class="p-4"><h1 class="text-3xl font-bold mb-4">Profile</h1><div class="bg-white p-6 rounded-lg shadow-md"><p class="text-gray-700 break-words"><span class="font-bold">Email:</span> ${currentUser.email}</p><button onclick="handleLogout()" class="mt-6 w-full bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600">Logout</button></div></div>`; }
+        async function loadBuyPointsPage() { appContent.innerHTML = `<div class="p-4"><h1 class="text-3xl font-bold mb-4">Buy Points</h1><div id="packages-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div></div>`; const s = await get(ref(db, 'pointPackages')); const p = s.val(); const c = document.getElementById('packages-list'); if (!p) { c.innerHTML = `<p class="text-center text-gray-500">No point packages available.</p>`; return; } let content = ''; for (const id in p) { const pkg = p[id]; content += `<div class="bg-white p-6 rounded-lg shadow-md text-center"><h3 class="text-xl font-bold text-blue-600">${pkg.points} Points</h3><p class="text-2xl font-bold my-2">$${pkg.price.toFixed(2)}</p><p class="text-gray-500 mb-4">${pkg.description}</p><button onclick="buyPoints(${pkg.points})" class="bg-orange-500 text-white font-bold py-2 px-6 rounded-full hover:bg-orange-600">Buy Now</button></div>`; } c.innerHTML = content; }
+        function loadMyPointsPage() { appContent.innerHTML = `<div class="p-4 text-center"><h1 class="text-3xl font-bold text-gray-800">My Points</h1><div class="my-8 bg-white p-8 rounded-full shadow-lg inline-block"><p class="text-5xl font-bold text-blue-600">${userProfile.points || 0}</p><p class="text-gray-500">Current Balance</p></div></div>`; }
+        function buyPoints(amount) { awardPoints(amount, `Purchased ${amount} points`); showSuccessModal(`You "purchased" ${amount} points!`, () => navigate('my-points')); }
+        const toBase64 = file => new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = reject; });
+        async function handleLogout() { await signOut(auth); }
+        Object.assign(window, { navigate, closeModal, startTask, handleLogout, buyPoints, redeemReward });
+    </script>
+</body>
+</html>
