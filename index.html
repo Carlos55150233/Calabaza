@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Rewards - Earn Real Rewards</title>
+    <title id="app-title">Task Rewards - Earn Real Rewards</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         ::-webkit-scrollbar { width: 5px; }
@@ -20,11 +20,9 @@
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
     </div>
 
-    <!-- =================================================================
-         NUEVA SECCIÓN: LANDING PAGE
-    ================================================================== -->
     <div id="landing-section" class="min-h-screen bg-white">
         <div class="container mx-auto px-6 py-12 text-center">
+            <img id="app-logo" src="" alt="App Logo" class="mx-auto h-20 w-auto mb-6">
             <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800">
                 Completa Tareas, <span class="text-orange-500">Gana Recompensas</span>
             </h1>
@@ -36,7 +34,6 @@
                     Comenzar Ahora
                 </button>
             </div>
-
             <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
                 <div class="p-6">
                     <div class="flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mx-auto mb-4">
@@ -66,6 +63,7 @@
     <div id="auth-section" class="min-h-screen flex items-center justify-center p-4 hidden">
         <div class="w-full max-w-md bg-white rounded-lg shadow-md p-8 relative">
             <a href="#" id="back-to-landing" class="absolute top-4 left-4 text-blue-500 hover:text-blue-700 font-bold">&larr; Volver al Inicio</a>
+            <img id="auth-app-logo" src="" alt="App Logo" class="mx-auto h-16 w-auto mb-4">
             <div id="login-form" class="mt-8">
                 <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
                 <form id="login-form-element">
@@ -133,6 +131,9 @@
         const appContent = document.getElementById('app-content');
         const modalContainer = document.getElementById('modal-container');
         
+        function listenToAppSettings() { const settingsRef = ref(db, 'settings'); onValue(settingsRef, (snapshot) => { let appName = "Task Rewards"; let appLogo = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2Y5NzMxNiI+PHBhdGggZD0iTTEyIDJDNi40NzcgMiAyIDYuNDc3IDIgMTJzNC40NzcgMTAgMTAgMTAgMTAtNC40NzcgMTAtMTBTMTcuNTIzIDIgMTIgMnptMCAxOGMtNC40MTggMC04LTMuNTgyLTgtOHMzLjU4Mi04IDgtOCA4IDMuNTgyIDggOCA0LjQxOCAwIDgtMy41ODJ6Ii8+PHBhdGggZD0iTTExIDE2aDJ2LTZoLTJ2NnptMC04aDJ2LTJoLTJ2MnoiLz48L3N2Zz4="; if (snapshot.exists()) { const settings = snapshot.val(); appName = settings.appName || appName; appLogo = settings.appLogo || appLogo; } document.title = appName + " - Earn Real Rewards"; document.getElementById('app-logo').src = appLogo; document.getElementById('auth-app-logo').src = appLogo; }); }
+        listenToAppSettings();
+        
         onAuthStateChanged(auth, (user) => {
             loader.classList.add('hidden');
             if (user) {
@@ -153,14 +154,11 @@
         
         document.getElementById('login-form-element').addEventListener('submit', async (e) => { e.preventDefault(); loader.classList.remove('hidden'); const email = document.getElementById('login-email').value; const password = document.getElementById('login-password').value; try { await signInWithEmailAndPassword(auth, email, password); } catch (error) { alert(`Login failed: ${error.message}`); } finally { loader.classList.add('hidden'); } });
         document.getElementById('register-form-element').addEventListener('submit', async (e) => { e.preventDefault(); loader.classList.remove('hidden'); const email = document.getElementById('register-email').value; const password = document.getElementById('register-password').value; try { const cred = await createUserWithEmailAndPassword(auth, email, password); await set(ref(db, `users/${cred.user.uid}`), { email: cred.user.email, points: 0, createdAt: serverTimestamp() }); } catch (error) { alert(`Registration failed: ${error.message}`); } finally { loader.classList.add('hidden'); } });
-
         function toggleAuthForms(e) { e.preventDefault(); document.getElementById('login-form').classList.toggle('hidden'); document.getElementById('register-form').classList.toggle('hidden'); }
         document.getElementById('show-register').addEventListener('click', toggleAuthForms);
         document.getElementById('show-login').addEventListener('click', toggleAuthForms);
-
         document.getElementById('cta-get-started').addEventListener('click', () => { landingSection.classList.add('hidden'); authSection.classList.remove('hidden'); });
         document.getElementById('back-to-landing').addEventListener('click', () => { authSection.classList.add('hidden'); landingSection.classList.remove('hidden'); });
-
         function listenToUserData() { if (!currentUser) return; onValue(ref(db, `users/${currentUser.uid}`), (snapshot) => { userProfile = snapshot.val() || { points: 0, completedTasks: {} }; }); }
         
         function navigate(page) {
@@ -168,101 +166,47 @@
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             const navButton = document.querySelector(`button[onclick="navigate('${page}')"]`);
             if (navButton) navButton.classList.add('active');
-            
-            const pageLoaders = {
-                'tasks': loadTasksPage, 'buy-points': loadBuyPointsPage, 'redeem': loadRedeemPage,
-                'my-points': loadMyPointsPage, 'profile': loadProfilePage
-            };
-            if (pageLoaders[page]) pageLoaders[page]();
-            else console.error(`Page loader for "${page}" not found.`);
+            const pageLoaders = { 'tasks': loadTasksPage, 'buy-points': loadBuyPointsPage, 'redeem': loadRedeemPage, 'my-points': loadMyPointsPage, 'profile': loadProfilePage };
+            if (pageLoaders[page]) pageLoaders[page](); else console.error(`Page loader for "${page}" not found.`);
             loader.classList.add('hidden');
         }
 
-        async function loadTasksPage() {
-            appContent.innerHTML = `<div class="p-4"><h1 class="text-3xl font-bold mb-4">Available Tasks</h1><div id="task-list" class="space-y-4"></div></div>`;
-            const snapshot = await get(ref(db, 'tasks'));
-            const tasks = snapshot.val();
-            const taskList = document.getElementById('task-list');
-            if (!tasks) { taskList.innerHTML = `<p class="text-center text-gray-500">No tasks available.</p>`; return; }
+        // =================================================================
+        // LÓGICA DE COMPRA DE PUNTOS ACTUALIZADA
+        // =================================================================
+        async function loadBuyPointsPage() {
+            appContent.innerHTML = `<div class="p-4"><h1 class="text-3xl font-bold mb-4">Buy Points</h1><div id="packages-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div></div>`;
+            const s = await get(ref(db, 'pointPackages'));
+            const p = s.val();
+            const c = document.getElementById('packages-list');
+            if (!p) { c.innerHTML = `<p class="text-center text-gray-500">No point packages available.</p>`; return; }
             let content = '';
-            const COOLDOWN = 30 * 60 * 1000;
-            for (const taskId in tasks) {
-                const task = tasks[taskId];
-                const completion = userProfile.completedTasks?.[taskId];
-                const isRepeatableYouTube = task.type === 'simple' && isYouTube(task.targetURL) && task.timerDuration > 0;
-                let isCompletedAndNotRepeatable = completion && (completion.status === 'approved' || completion.status === 'pending') && !isRepeatableYouTube;
-                if (isCompletedAndNotRepeatable) continue;
-                if (isRepeatableYouTube && completion?.status === 'approved') {
-                    const timeSince = Date.now() - (completion.completedAt || 0);
-                    if (timeSince < COOLDOWN) {
-                        content += `<div class="bg-white p-4 rounded-lg shadow-md opacity-60 flex items-center space-x-4"><img src="${task.imageBase64}" class="w-16 h-16 rounded-md object-cover flex-shrink-0"><div class="flex-1 min-w-0"><h3 class="font-bold text-lg truncate">${task.title}</h3><p class="text-sm text-gray-600 truncate">You can complete this task again soon.</p><span class="text-sm text-blue-500 font-bold cooldown-timer" data-cooldown-end="${(completion.completedAt || 0) + COOLDOWN}">Calculating...</span></div><button class="bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed flex-shrink-0">Waiting</button></div>`;
-                    } else {
-                         content += `<div class="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4"><img src="${task.imageBase64}" class="w-16 h-16 rounded-md object-cover flex-shrink-0"><div class="flex-1 min-w-0"><h3 class="font-bold text-lg truncate">${task.title}</h3><p class="text-sm text-gray-600 truncate">${task.description}</p><span class="text-green-500 font-bold">+${task.points} Points</span></div><button onclick="startTask('${taskId}')" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 flex-shrink-0">Start Again</button></div>`;
-                    }
-                } else if (!completion || completion.status === 'rejected') {
-                    content += `<div class="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4"><img src="${task.imageBase64}" class="w-16 h-16 rounded-md object-cover flex-shrink-0"><div class="flex-1 min-w-0"><h3 class="font-bold text-lg truncate">${task.title}</h3><p class="text-sm text-gray-600 truncate">${task.description}</p><span class="text-green-500 font-bold">+${task.points} Points</span></div><button onclick="startTask('${taskId}')" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 flex-shrink-0">Start</button></div>`;
-                }
+            for (const id in p) {
+                const pkg = p[id];
+                content += `<div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <h3 class="text-xl font-bold text-blue-600">${pkg.points} Points</h3>
+                    <p class="text-2xl font-bold my-2">$${pkg.price.toFixed(2)}</p>
+                    <p class="text-gray-500 mb-4">${pkg.description}</p>
+                    <button onclick="window.open('https://zerogrado.io', '_blank')" class="bg-orange-500 text-white font-bold py-2 px-6 rounded-full hover:bg-orange-600">Buy Now</button>
+                </div>`;
             }
-            taskList.innerHTML = content || `<p class="text-center text-gray-500">No new tasks for you.</p>`;
-            if (document.querySelector('.cooldown-timer')) { clearInterval(cooldownUpdateInterval); cooldownUpdateInterval = setInterval(updateCooldownTimers, 1000); updateCooldownTimers(); }
+            c.innerHTML = content;
         }
         
-        function updateCooldownTimers() {
-            const timers = document.querySelectorAll('.cooldown-timer');
-            if (timers.length === 0) { clearInterval(cooldownUpdateInterval); return; }
-            let shouldReload = false;
-            timers.forEach(timer => {
-                const endTime = parseInt(timer.getAttribute('data-cooldown-end'));
-                const remaining = endTime - Date.now();
-                if (remaining <= 0) {
-                    shouldReload = true;
-                } else {
-                    const minutes = Math.floor(remaining / 60000);
-                    const seconds = Math.floor((remaining % 60000) / 1000);
-                    timer.textContent = `Available in ${minutes}:${seconds.toString().padStart(2, '0')}`;
-                }
-            });
-            if (shouldReload) { clearInterval(cooldownUpdateInterval); navigate('tasks'); }
-        }
-
+        // El resto del código es idéntico y completo...
+        async function loadTasksPage() { appContent.innerHTML = `<div class="p-4"><h1 class="text-3xl font-bold mb-4">Available Tasks</h1><div id="task-list" class="space-y-4"></div></div>`; const snapshot = await get(ref(db, 'tasks')); const tasks = snapshot.val(); const taskList = document.getElementById('task-list'); if (!tasks) { taskList.innerHTML = `<p class="text-center text-gray-500">No tasks available.</p>`; return; } let content = ''; const COOLDOWN = 30 * 60 * 1000; for (const taskId in tasks) { const task = tasks[taskId]; const completion = userProfile.completedTasks?.[taskId]; const isRepeatableYouTube = task.type === 'simple' && isYouTube(task.targetURL) && task.timerDuration > 0; let isCompletedAndNotRepeatable = completion && (completion.status === 'approved' || completion.status === 'pending') && !isRepeatableYouTube; if (isCompletedAndNotRepeatable) continue; if (isRepeatableYouTube && completion?.status === 'approved') { const timeSince = Date.now() - (completion.completedAt || 0); if (timeSince < COOLDOWN) { content += `<div class="bg-white p-4 rounded-lg shadow-md opacity-60 flex items-center space-x-4"><img src="${task.imageBase64}" class="w-16 h-16 rounded-md object-cover flex-shrink-0"><div class="flex-1 min-w-0"><h3 class="font-bold text-lg truncate">${task.title}</h3><p class="text-sm text-gray-600 truncate">You can complete this task again soon.</p><span class="text-sm text-blue-500 font-bold cooldown-timer" data-cooldown-end="${(completion.completedAt || 0) + COOLDOWN}">Calculating...</span></div><button class="bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed flex-shrink-0">Waiting</button></div>`; } else { content += `<div class="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4"><img src="${task.imageBase64}" class="w-16 h-16 rounded-md object-cover flex-shrink-0"><div class="flex-1 min-w-0"><h3 class="font-bold text-lg truncate">${task.title}</h3><p class="text-sm text-gray-600 truncate">${task.description}</p><span class="text-green-500 font-bold">+${task.points} Points</span></div><button onclick="startTask('${taskId}')" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 flex-shrink-0">Start Again</button></div>`; } } else if (!completion || completion.status === 'rejected') { content += `<div class="bg-white p-4 rounded-lg shadow-md flex items-center space-x-4"><img src="${task.imageBase64}" class="w-16 h-16 rounded-md object-cover flex-shrink-0"><div class="flex-1 min-w-0"><h3 class="font-bold text-lg truncate">${task.title}</h3><p class="text-sm text-gray-600 truncate">${task.description}</p><span class="text-green-500 font-bold">+${task.points} Points</span></div><button onclick="startTask('${taskId}')" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 flex-shrink-0">Start</button></div>`; } } taskList.innerHTML = content || `<p class="text-center text-gray-500">No new tasks for you.</p>`; if (document.querySelector('.cooldown-timer')) { clearInterval(cooldownUpdateInterval); cooldownUpdateInterval = setInterval(updateCooldownTimers, 1000); updateCooldownTimers(); } }
+        function updateCooldownTimers() { const timers = document.querySelectorAll('.cooldown-timer'); if (timers.length === 0) { clearInterval(cooldownUpdateInterval); return; } let shouldReload = false; timers.forEach(timer => { const endTime = parseInt(timer.getAttribute('data-cooldown-end')); const remaining = endTime - Date.now(); if (remaining <= 0) { shouldReload = true; } else { const minutes = Math.floor(remaining / 60000); const seconds = Math.floor((remaining % 60000) / 1000); timer.textContent = `Available in ${minutes}:${seconds.toString().padStart(2, '0')}`; } }); if (shouldReload) { clearInterval(cooldownUpdateInterval); navigate('tasks'); } }
         async function startTask(taskId) { const task = (await get(ref(db, `tasks/${taskId}`))).val(); if (task.type === 'simple') handleSimpleTask(taskId, task); else if (task.type === 'compound') handleCompoundTask(taskId, task, 0); }
         function isYouTube(url) { return url && (url.includes('youtube.com') || url.includes('youtu.be')); }
         function handleSimpleTask(taskId, task) { if (isYouTube(task.targetURL) && task.timerDuration > 0) { showYouTubeModal(task, () => { awardPoints(task.points); markTaskAsComplete(taskId, { status: 'approved' }); showSuccessModal(`You've earned ${task.points} points!`, () => navigate('tasks')); }); return; } buildTaskModal(taskId, 'simple', task, null); }
         function handleCompoundTask(taskId, task, subtaskIndex) { const subtask = task.subtasks[subtaskIndex]; if (isYouTube(subtask.targetURL) && subtask.timerDuration > 0) { showYouTubeModal(subtask, () => { const isLast = subtaskIndex + 1 >= task.subtasks.length; if (isLast) submitCompoundSubtask(taskId, task, subtaskIndex); else handleCompoundTask(taskId, task, subtaskIndex + 1); }); return; } buildTaskModal(taskId, 'compound', task, subtaskIndex); }
-        
         function onPlayerReady(event) { event.target.playVideo(); }
-        function onPlayerStateChange(event) {
-            clearInterval(countdownInterval);
-            const timerDisplay = document.getElementById('timer-display');
-            if (event.data == YT.PlayerState.PLAYING) {
-                countdownInterval = setInterval(() => {
-                    currentCountdown--;
-                    if (timerDisplay) timerDisplay.innerText = `Time left: ${currentCountdown}s`;
-                    if (currentCountdown <= 0) {
-                        clearInterval(countdownInterval);
-                        closeModal();
-                        if(onTimerEndCallbackGlobal) onTimerEndCallbackGlobal();
-                    }
-                }, 1000);
-            } else if (event.data == YT.PlayerState.PAUSED) {
-                if (timerDisplay) timerDisplay.innerText = `Video paused. ${currentCountdown}s remaining`;
-            } else if (event.data == YT.PlayerState.BUFFERING) {
-                if (timerDisplay) timerDisplay.innerText = `Loading video...`;
-            }
-        }
+        function onPlayerStateChange(event) { clearInterval(countdownInterval); const timerDisplay = document.getElementById('timer-display'); if (event.data == YT.PlayerState.PLAYING) { countdownInterval = setInterval(() => { currentCountdown--; if (timerDisplay) timerDisplay.innerText = `Time left: ${currentCountdown}s`; if (currentCountdown <= 0) { clearInterval(countdownInterval); closeModal(); if(onTimerEndCallbackGlobal) onTimerEndCallbackGlobal(); } }, 1000); } else if (event.data == YT.PlayerState.PAUSED) { if (timerDisplay) timerDisplay.innerText = `Video paused. ${currentCountdown}s remaining`; } else if (event.data == YT.PlayerState.BUFFERING) { if (timerDisplay) timerDisplay.innerText = `Loading video...`; } }
         window.onYouTubeIframeAPIReady = function() {};
-
         function showYouTubeModal(taskInfo, onTimerEnd) { currentCountdown = taskInfo.timerDuration || 10; onTimerEndCallbackGlobal = onTimerEnd; const videoId = taskInfo.targetURL.split('v=')[1]?.split('&')[0] || taskInfo.targetURL.split('/').pop(); modalContainer.innerHTML = `<div class="bg-white rounded-lg w-full max-w-lg p-4 relative"><h2 class="text-xl font-bold mb-4">${taskInfo.title || taskInfo.description}</h2><div class="aspect-video"><div id="youtube-player"></div></div><p class="text-center text-2xl font-bold mt-4" id="timer-display">Loading video...</p></div>`; modalContainer.classList.remove('hidden'); ytPlayer = new YT.Player('youtube-player', { height: '100%', width: '100%', videoId: videoId, playerVars: { 'autoplay': 1, 'controls': 1, 'rel': 0 }, events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange } }); }
-        
-        function showSuccessModal(message, onConfirm = () => {}) {
-            modalContainer.innerHTML = `<div class="bg-white rounded-lg p-6 shadow-xl text-center w-full max-w-sm"><div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4"><svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg></div><h3 class="text-lg leading-6 font-medium text-gray-900">Success!</h3><div class="mt-2 px-7 py-3"><p class="text-xl font-bold text-green-600">${message}</p></div><div class="mt-4"><button id="success-modal-close" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg">Awesome!</button></div></div>`;
-            modalContainer.classList.remove('hidden');
-            document.getElementById('success-modal-close').onclick = () => { closeModal(); onConfirm(); };
-        }
-
+        function showSuccessModal(message, onConfirm = () => {}) { modalContainer.innerHTML = `<div class="bg-white rounded-lg p-6 shadow-xl text-center w-full max-w-sm"><div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4"><svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg></div><h3 class="text-lg leading-6 font-medium text-gray-900">Success!</h3><div class="mt-2 px-7 py-3"><p class="text-xl font-bold text-green-600">${message}</p></div><div class="mt-4"><button id="success-modal-close" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg">Awesome!</button></div></div>`; modalContainer.classList.remove('hidden'); document.getElementById('success-modal-close').onclick = () => { closeModal(); onConfirm(); }; }
         function closeModal() { if(ytPlayer) { try { ytPlayer.destroy(); } catch(e){} ytPlayer = null; } clearInterval(countdownInterval); modalContainer.innerHTML = ''; modalContainer.classList.add('hidden'); }
         async function markTaskAsComplete(taskId, details) { await set(ref(db, `users/${currentUser.uid}/completedTasks/${taskId}`), { ...details, completedAt: serverTimestamp() }); }
-        
         function buildTaskModal(taskId, taskType, task, subtaskIndex) { const isCompound = taskType === 'compound'; const currentStep = isCompound ? task.subtasks[subtaskIndex] : task; const title = isCompound ? `${task.title} (Step ${subtaskIndex + 1}/${task.subtasks.length})` : task.title; let verificationHtml = ''; const vType = currentStep.verificationType; if (vType === 'photo') verificationHtml = `<label class="block mb-2 font-semibold">Upload proof (photo):</label><input type="file" id="photo-proof" accept="image/*" class="w-full text-sm" required>`; else if (vType === 'question') verificationHtml = `<label class="block mb-2 font-semibold">${currentStep.questionText}</label><input type="text" id="question-answer" class="w-full border rounded p-2" required>`; else if (vType === 'both') verificationHtml = `<label class="block mb-2 font-semibold">Upload proof (photo):</label><input type="file" id="photo-proof" accept="image/*" class="w-full text-sm" required><label class="block mt-4 mb-2 font-semibold">${currentStep.questionText}</label><input type="text" id="question-answer" class="w-full border rounded p-2" required>`; const buttonText = isCompound ? (subtaskIndex + 1 === task.subtasks.length ? 'Finish & Submit Mission' : 'Complete Step & Continue') : 'Submit for Review'; modalContainer.innerHTML = `<div class="bg-white rounded-lg w-full max-w-lg p-6 relative"><button onclick="closeModal()" class="absolute top-2 right-2 text-2xl font-bold">&times;</button><h2 class="text-xl font-bold mb-2">${title}</h2><div id="task-initial-view"><p class="mb-4">${currentStep.description}</p><button id="open-task-btn" class="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600">Open Task & Continue</button></div><div id="task-verification-view" class="hidden"><p class="mb-4 text-green-600 font-semibold">Task link opened. Submit proof below.</p><form id="verification-form">${verificationHtml}<button type="submit" class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg">${buttonText}</button></form></div></div>`; modalContainer.classList.remove('hidden'); document.getElementById('open-task-btn').onclick = () => revealVerification(taskId, taskType, task, subtaskIndex); document.getElementById('verification-form').onsubmit = (e) => { e.preventDefault(); if (isCompound) submitCompoundSubtask(taskId, task, subtaskIndex); else submitSimpleVerification(taskId, task); }; }
         function revealVerification(taskId, taskType, task, subtaskIndex) { const isCompound = taskType === 'compound'; const currentStep = isCompound ? task.subtasks[subtaskIndex] : task; window.open(currentStep.targetURL, '_blank'); if (currentStep.verificationType === 'none') { if (isCompound) { const isLast = subtaskIndex + 1 === task.subtasks.length; if (isLast) submitCompoundSubtask(taskId, task, subtaskIndex); else handleCompoundTask(taskId, task, subtaskIndex + 1); } else { awardPoints(task.points); markTaskAsComplete(taskId, { status: 'approved' }); showSuccessModal(`You earned ${task.points} points!`, () => navigate('tasks')); } return; } document.getElementById('task-initial-view').classList.add('hidden'); document.getElementById('task-verification-view').classList.remove('hidden'); }
         async function submitSimpleVerification(taskId, task) { loader.classList.remove('hidden'); const submission = {}; if (task.verificationType.includes('question')) submission.answer = document.getElementById('question-answer').value; if (task.verificationType.includes('photo')) { const file = document.getElementById('photo-proof').files[0]; if (file) submission.photoBase64 = await toBase64(file); else { alert("Photo proof is required."); loader.classList.add('hidden'); return; } } await push(ref(db, 'verifications'), { userId: currentUser.uid, taskId, submission, status: 'pending', taskTitle: task.title, userEmail: currentUser.email, timestamp: serverTimestamp() }); markTaskAsComplete(taskId, { status: 'pending' }); alert('Submission received! It will be reviewed.'); closeModal(); navigate('tasks'); loader.classList.add('hidden'); }
@@ -274,12 +218,10 @@
         function loadRedemptionHistory() { const q = query(ref(db, 'redemptions'), orderByChild('userId'), equalTo(currentUser.uid)); onValue(q, (snapshot) => { const container = document.getElementById('redemption-history'); container.innerHTML = ''; if (!snapshot.exists()) { container.innerHTML = `<p class="text-center text-gray-500">You have no redemption history.</p>`; return; } let cards = []; snapshot.forEach(child => { const r = child.val(); let sColor = 'text-yellow-500'; if (r.status === 'approved') sColor = 'text-green-500'; if (r.status === 'rejected') sColor = 'text-red-500'; let d = ''; if (r.status === 'approved' && r.rewardData) d = `<div class="mt-2 p-2 bg-gray-100 rounded"><strong>Reward:</strong> <span class="font-mono break-all">${r.rewardData}</span></div>`; if (r.status === 'rejected' && r.rejectionReason) d = `<div class="mt-2 p-2 bg-red-50 rounded text-red-700"><strong>Reason:</strong> ${r.rejectionReason}</div>`; cards.push(`<div class="bg-white p-4 rounded-lg shadow-sm"><div class="flex justify-between items-start"><div><h4 class="font-bold">${r.rewardTitle}</h4><p class="text-sm text-gray-500">-${r.points} points</p><p class="text-xs text-gray-400">${new Date(r.timestamp).toLocaleString()}</p></div><span class="font-bold capitalize ${sColor}">${r.status}</span></div>${d}</div>`); }); container.innerHTML = cards.reverse().join(''); }); }
         function loadRedeemPage() { appContent.innerHTML = `<div class="p-4"><h1 class="text-3xl font-bold mb-4">Redeem Points</h1><div id="rewards-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div><h2 class="text-xl font-bold mt-8 mb-4">My Redemptions</h2><div id="redemption-history" class="space-y-3"></div></div>`; loadRewards(); loadRedemptionHistory(); }
         function loadProfilePage() { appContent.innerHTML = `<div class="p-4"><h1 class="text-3xl font-bold mb-4">Profile</h1><div class="bg-white p-6 rounded-lg shadow-md"><p class="text-gray-700 break-words"><span class="font-bold">Email:</span> ${currentUser.email}</p><button onclick="handleLogout()" class="mt-6 w-full bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600">Logout</button></div></div>`; }
-        async function loadBuyPointsPage() { appContent.innerHTML = `<div class="p-4"><h1 class="text-3xl font-bold mb-4">Buy Points</h1><div id="packages-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div></div>`; const s = await get(ref(db, 'pointPackages')); const p = s.val(); const c = document.getElementById('packages-list'); if (!p) { c.innerHTML = `<p class="text-center text-gray-500">No point packages available.</p>`; return; } let content = ''; for (const id in p) { const pkg = p[id]; content += `<div class="bg-white p-6 rounded-lg shadow-md text-center"><h3 class="text-xl font-bold text-blue-600">${pkg.points} Points</h3><p class="text-2xl font-bold my-2">$${pkg.price.toFixed(2)}</p><p class="text-gray-500 mb-4">${pkg.description}</p><button onclick="buyPoints(${pkg.points})" class="bg-orange-500 text-white font-bold py-2 px-6 rounded-full hover:bg-orange-600">Buy Now</button></div>`; } c.innerHTML = content; }
         function loadMyPointsPage() { appContent.innerHTML = `<div class="p-4 text-center"><h1 class="text-3xl font-bold text-gray-800">My Points</h1><div class="my-8 bg-white p-8 rounded-full shadow-lg inline-block"><p class="text-5xl font-bold text-blue-600">${userProfile.points || 0}</p><p class="text-gray-500">Current Balance</p></div></div>`; }
-        function buyPoints(amount) { awardPoints(amount, `Purchased ${amount} points`); showSuccessModal(`You "purchased" ${amount} points!`, () => navigate('my-points')); }
         const toBase64 = file => new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = reject; });
         async function handleLogout() { await signOut(auth); }
-        Object.assign(window, { navigate, closeModal, startTask, handleLogout, buyPoints, redeemReward });
+        Object.assign(window, { navigate, closeModal, startTask, handleLogout, redeemReward });
     </script>
 </body>
 </html>
